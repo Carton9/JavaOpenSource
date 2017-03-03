@@ -52,9 +52,10 @@ public abstract class WebClient implements WebInterface, Runnable ,AutoCloseable
 		}
 		else throw error;
 	}
-	public void init(Protocol type,String ip,int port) throws UndefineProtocolException, IOException {
+	public void init(Protocol type,String IP,int port) throws UndefineProtocolException, IOException {
 		//error=new UndefineProtocolException();
 		// TODO Auto-generated constructor stub
+		ip=InetAddress.getByName(IP);
 		this.type=type;
 		if(type==Protocol.UDP){
 			//ClientUDP=(DatagramSocket)Client;
@@ -73,7 +74,7 @@ public abstract class WebClient implements WebInterface, Runnable ,AutoCloseable
 			isAlive=true;
 			ClientList.add(this);
 		}
-		else initUndefine(ip,port);
+		else initUndefine(IP,port);
 	}
 	private void build(Object Client) throws UndefineProtocolException, IOException{
 		// TODO Auto-generated constructor stub
@@ -171,7 +172,9 @@ public abstract class WebClient implements WebInterface, Runnable ,AutoCloseable
 	
 	private void sendUDP() throws IOException{
 		byte[] data=inputStock.get(0);
+		byte[] buff=new byte[4096];
 		inputStock.remove(0);
+		inputUDP=new DatagramPacket(buff,buff.length);
 		outputUDP= new DatagramPacket(data,data.length,ip,port); 
 		for(int i=0;i<5;i++){
 			ClientUDP.send(outputUDP);
@@ -190,6 +193,8 @@ public abstract class WebClient implements WebInterface, Runnable ,AutoCloseable
 		outputStock.add(buff);
 	}
 	private void reviceUDP() throws IOException{
+		byte[] buff=new byte[4096];
+		inputUDP=new DatagramPacket(buff,buff.length);
 		ClientUDP.receive(inputUDP);  
 		outputStock.add(inputUDP.getData());
 		DatagramPacket outputUDP= new DatagramPacket("OK".getBytes(),"OK".length(),ip,port); 
