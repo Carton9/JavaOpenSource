@@ -4,6 +4,11 @@ import java.io.IOException;
 
 public class SimpleClient extends WebClient {
 	
+	public SimpleClient(Protocol type, String IP, int port) throws UndefineProtocolException, IOException {
+		super(type, IP, port);
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public void initUndefine(String ip, int port) throws UndefineProtocolException, IOException {
 		// TODO Auto-generated method stub

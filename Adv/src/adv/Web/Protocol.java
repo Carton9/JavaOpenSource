@@ -1,5 +1,5 @@
 package adv.Web;
 
 public enum Protocol {
-	TCP,UDP,HTTP,FTP
+	TCP,UDP,HTTP,FTP,Undefine
 }
