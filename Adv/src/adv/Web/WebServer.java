@@ -10,6 +10,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public abstract class WebServer extends Thread{
-
-	
+	WebListener listener;
+	ArrayList<WebClient> processerTCPlist=new ArrayList<WebClient>();
+	public WebServer(){
+		
+	}
 }

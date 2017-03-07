@@ -79,6 +79,7 @@ public abstract class WebService implements Runnable ,AutoCloseable{
 			//ClientList.remove(this);
 		}
 		else closeUndefine();
+		isAlive=false;
 	}
 	protected void sendTCP() throws IOException{
 		byte[] data=inputStock.get(0);
