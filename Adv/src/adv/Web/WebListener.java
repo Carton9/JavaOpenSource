@@ -17,9 +17,12 @@ public abstract class WebListener extends WebService{
 	private static HashMap<String,WebListener> ListenerList=new HashMap<String,WebListener>();
 	private ArrayList processedDataList=new ArrayList();
 	private ServerSocket listener;
+	ArrayList<DatagramPacket> outputUDPStock =new ArrayList<DatagramPacket>();
+	ArrayList<DatagramPacket> inputUDPStock =new ArrayList<DatagramPacket>();
 	public WebListener(String name,String IP,Protocol type,int port) throws UndefineProtocolException, IOException{
 		error=new UndefineProtocolException();
 		init(type,IP,port);
+		ListenerList.put(name, this);
 	}
 	@Override
 	public void init(Protocol type,String IP,int port) throws UndefineProtocolException, IOException {
@@ -61,7 +64,7 @@ public abstract class WebListener extends WebService{
 					e1.printStackTrace();
 				}
 			}
-		}else if(type==Protocol.UDP){
+		}else if(type==Protocol.TCP){
 			try {
 				listenTCP();
 			} catch (IOException | UndefineProtocolException e) {
@@ -93,6 +96,36 @@ public abstract class WebListener extends WebService{
 		processedDataList.remove(0);
 		return output;
 	}
+	@Override
+	protected void reviceUDP() throws IOException{
+		byte[] buff=new byte[4096];
+		DatagramPacket inputUDP=new DatagramPacket(buff,buff.length);
+		ClientUDP.receive(inputUDP);  
+		outputUDPStock.add(inputUDP);
+		DatagramPacket outputUDP= new DatagramPacket("OK".getBytes(),"OK".length(),ip,port); 
+		ClientUDP.send(outputUDP);
+	}
+	@Override
+	protected void sendUDP() throws IOException{
+		outputUDP=inputUDPStock.get(0);
+		byte[] buff=new byte[4096];
+		inputUDPStock.remove(0);
+		inputUDP=new DatagramPacket(buff,buff.length);
+		for(int i=0;i<5;i++){
+			ClientUDP.send(outputUDP);
+			ClientUDP.receive(inputUDP);
+			if(inputUDP.getAddress().equals(ip)){
+				String respone=new String(inputUDP.getData());
+				if(respone.equals("OK"))break;
+				else outputUDPStock.add(inputUDP);
+			}
+		}
+	}
+	public void sendUDPData(DatagramPacket data) throws IOException{
+		inputUDPStock.add(data);
+		sendUDP();
+	}
+	
 	public abstract<T> T preProcess(T data);
 	public abstract void listenUndefine();
 }
