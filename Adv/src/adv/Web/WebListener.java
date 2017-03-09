@@ -83,7 +83,7 @@ public abstract class WebListener extends WebService{
 	}
 	private void listenUDP() throws IOException{
 		reviceUDP();
-		processedDataList.add(preProcess(revice()));
+		processedDataList.add(preProcess(reviceUDPPackage()));
 	}
 	private void listenTCP() throws IOException, UndefineProtocolException{
 		Socket client = listener.accept();
@@ -94,6 +94,12 @@ public abstract class WebListener extends WebService{
 		if(processedDataList.isEmpty())return null;
 		T output=(T)processedDataList.get(0);
 		processedDataList.remove(0);
+		return output;
+	}
+	
+	protected DatagramPacket reviceUDPPackage(){
+		DatagramPacket output=outputUDPStock.get(0);
+		outputUDPStock.remove(0);
 		return output;
 	}
 	@Override
@@ -107,10 +113,10 @@ public abstract class WebListener extends WebService{
 	}
 	@Override
 	protected void sendUDP() throws IOException{
-		outputUDP=inputUDPStock.get(0);
-		byte[] buff=new byte[4096];
+		DatagramPacket outputUDP=inputUDPStock.get(0);
 		inputUDPStock.remove(0);
-		inputUDP=new DatagramPacket(buff,buff.length);
+		byte[] buff=new byte[4096];
+		DatagramPacket inputUDP=new DatagramPacket(buff,buff.length);
 		for(int i=0;i<5;i++){
 			ClientUDP.send(outputUDP);
 			ClientUDP.receive(inputUDP);

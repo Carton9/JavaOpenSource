@@ -17,6 +17,7 @@ public abstract class WebServer extends Thread{
 	Protocol type;String IP;int port;String name;
 	boolean isAlive=false;
 	WebServer self=this;
+	ArrayList<processUDP> processerUDPList=new ArrayList<processUDP>();
 	class Listener extends WebListener{
 
 		public Listener(String name, String IP, Protocol type, int port) throws UndefineProtocolException, IOException {
@@ -68,9 +69,9 @@ public abstract class WebServer extends Thread{
 		
 
 	}
-	class Tcp extends WebClient{
+	class processTCP extends WebClient{
 
-		public Tcp(Object Client) throws UndefineProtocolException, IOException {
+		public processTCP(Object Client) throws UndefineProtocolException, IOException {
 			super(Client);
 			// TODO Auto-generated constructor stub
 		}
@@ -112,7 +113,7 @@ public abstract class WebServer extends Thread{
 					try {
 						sendUDP();
 						reviceUDP();
-						process(revice());
+						send(process(revice()));
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -159,6 +160,25 @@ public abstract class WebServer extends Thread{
 			}
 		}
 	}
+	class processUDP extends Thread{
+		DatagramPacket data;
+
+		public processUDP(DatagramPacket data){
+			this.data=data;
+			processerUDPList.add(this);
+		}
+		@Override
+		public void run() {
+			try {
+				listener.sendUDPData(process(data));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return;
+			}
+			processerUDPList.remove(this);
+		}
+	}
 	public WebServer(String name,Protocol type,String IP,int port){
 		this.type=type;
 		this.IP=IP;
@@ -180,7 +200,9 @@ public abstract class WebServer extends Thread{
 		isAlive=true;
 		while(isAlive){
 			if(type==Protocol.UDP){
-				
+				DatagramPacket clientData=listener.getData();
+				processUDP processer=new processUDP(clientData);
+				processer.start();
 			}else if(type==Protocol.TCP){
 				Socket client=listener.getData();
 				if(client==null)continue;
@@ -202,8 +224,9 @@ public abstract class WebServer extends Thread{
 		}
 	}
 	public WebClient makeTCPClient(Socket a) throws UndefineProtocolException, IOException{
-		Tcp newClient=new Tcp(a);
+		processTCP newClient=new processTCP(a);
 		return newClient;
 	}
-	public abstract void process(byte[] data);
+	public abstract byte[] process(byte[] data);
+	public abstract DatagramPacket process(DatagramPacket data);
 }

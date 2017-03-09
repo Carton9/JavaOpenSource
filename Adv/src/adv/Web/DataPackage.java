@@ -215,7 +215,7 @@ public class DataPackage implements Serializable {
 		}
 		return false;
 	}
-DatagramPacket	public DataPackage output(){
+	public DataPackage output(){
 		return this;
 	}
 }
