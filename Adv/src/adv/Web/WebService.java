@@ -16,8 +16,8 @@ public abstract class WebService implements Runnable ,AutoCloseable{
 	protected int port;
 	protected Protocol type;
 	protected UndefineProtocolException error=new UndefineProtocolException();;
-	protected ArrayList<byte[]> inputStock=new ArrayList<byte[]>();
-	protected ArrayList<byte[]> outputStock=new ArrayList<byte[]>();
+	protected volatile ArrayList<byte[]> inputStock=new ArrayList<byte[]>();
+	protected volatile ArrayList<byte[]> outputStock=new ArrayList<byte[]>();
 	protected DatagramSocket ClientUDP=null;
 	protected DatagramPacket outputUDP=null;
 	protected DatagramPacket inputUDP=null;
@@ -82,6 +82,7 @@ public abstract class WebService implements Runnable ,AutoCloseable{
 		isAlive=false;
 	}
 	protected void sendTCP() throws IOException{
+		if(inputStock.isEmpty())return;
 		byte[] data=inputStock.get(0);
 		inputStock.remove(0);
 		outputTCP.write(data, 0, data.length);
