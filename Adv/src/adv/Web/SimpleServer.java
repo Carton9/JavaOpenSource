@@ -1,7 +1,7 @@
 package adv.Web;
 
 import java.net.DatagramPacket;
-
+//fix
 public class SimpleServer extends WebServer {
 
 	public SimpleServer(String name, Protocol type, String IP, int port) {

@@ -12,7 +12,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+//fix
 public abstract class WebListener extends WebService{
 	private static HashMap<String,WebListener> ListenerList=new HashMap<String,WebListener>();
 	private volatile ArrayList processedDataList=new ArrayList();

@@ -3,7 +3,7 @@ package adv.Web;
 import java.io.IOException;
 
 public class SimpleClient extends WebClient {
-	
+	// fix
 	public SimpleClient(Protocol type, String IP, int port) throws UndefineProtocolException, IOException {
 		super(type, IP, port);
 		// TODO Auto-generated constructor stub

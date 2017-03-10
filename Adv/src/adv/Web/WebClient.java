@@ -10,7 +10,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
-
+//fix
 public abstract class WebClient extends WebService{
 	//T Client;ed
 	private static ArrayList<WebClient> ClientList=new ArrayList<WebClient>();
