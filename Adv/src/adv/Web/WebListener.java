@@ -15,10 +15,10 @@ import java.util.Map;
 
 public abstract class WebListener extends WebService{
 	private static HashMap<String,WebListener> ListenerList=new HashMap<String,WebListener>();
-	private volatile ArrayList processedDataList=new ArrayList();
+	private ArrayList processedDataList=new ArrayList();
 	private ServerSocket listener;
-	volatile ArrayList<DatagramPacket> outputUDPStock =new ArrayList<DatagramPacket>();
-	volatile ArrayList<DatagramPacket> inputUDPStock =new ArrayList<DatagramPacket>();
+	ArrayList<DatagramPacket> outputUDPStock =new ArrayList<DatagramPacket>();
+	ArrayList<DatagramPacket> inputUDPStock =new ArrayList<DatagramPacket>();
 	public WebListener(String name,String IP,Protocol type,int port) throws UndefineProtocolException, IOException{
 		error=new UndefineProtocolException();
 		init(type,IP,port);
@@ -87,7 +87,7 @@ public abstract class WebListener extends WebService{
 	}
 	private void listenTCP() throws IOException, UndefineProtocolException{
 		Socket client = listener.accept();
-		//build(client);
+		build(client);
 		processedDataList.add(preProcess(client));
 	}
 	public <T> T getData(){

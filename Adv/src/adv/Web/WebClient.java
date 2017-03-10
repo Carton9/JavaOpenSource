@@ -25,14 +25,12 @@ public abstract class WebClient extends WebService{
 		if(Client==null)throw new IOException();
 		// TODO Auto-generated constructor stub
 		if(Client.getClass().getName().equals("java.net.DatagramSocket")){
-			type=Protocol.UDP;
 			ClientUDP=(DatagramSocket)Client;
 			build(ClientUDP);
 			isAlive=true;
 			ClientList.add(this);
 		}
 		else if(Client.getClass().getName().equals("java.net.Socket")){
-			type=Protocol.TCP;
 			ClientTCP=(Socket)Client;
 			build(ClientTCP);
 			isAlive=true;
@@ -56,7 +54,6 @@ public abstract class WebClient extends WebService{
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-						return;
 					}
 				}
 			}
@@ -72,7 +69,6 @@ public abstract class WebClient extends WebService{
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-						return;
 					}
 				}
 			}
