@@ -68,12 +68,12 @@ public abstract class WebService implements Runnable ,AutoCloseable{
 	}
 	@Override
 	public void close()throws IOException{
-		if(ClientTCP!=null&&!ClientTCP.isClosed()){
+		if(type==Protocol.TCP){
 			ClientTCP.close();
 			isAlive=false;
 			//ClientList.remove(this);
 		}
-		else if(ClientUDP!=null&&!ClientUDP.isClosed()){
+		else if(type==Protocol.UDP){
 			ClientUDP.close();
 			isAlive=false;
 			//ClientList.remove(this);
