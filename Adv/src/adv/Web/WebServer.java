@@ -28,7 +28,7 @@ public abstract class WebServer extends Thread{
 		@Override
 		public <T> T preProcess(T data) {
 			// TODO Auto-generated method stub
-			return null;
+			return data;
 		}
 
 		@Override
@@ -116,12 +116,14 @@ public abstract class WebServer extends Thread{
 						send(process(revice()));
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						System.out.println("Client disconnect");
 						try {
 							close();
+							return;
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
-							e1.printStackTrace();
+							//e1.printStackTrace();
+							return;
 						}
 					}
 				}
@@ -129,15 +131,17 @@ public abstract class WebServer extends Thread{
 					try {
 						sendTCP();
 						reviceTCP();
-						process(revice());
+						send(process(revice()));
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						System.out.println("Client disconnect");
 						try {
 							close();
+							return;
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
-							e1.printStackTrace();
+							//e1.printStackTrace();
+							return;
 						}
 					}
 				}
@@ -151,9 +155,11 @@ public abstract class WebServer extends Thread{
 						e.printStackTrace();
 						try {
 							close();
+							return;
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
+							return;
 						}
 					}
 				}
@@ -212,7 +218,7 @@ public abstract class WebServer extends Thread{
 				} catch (UndefineProtocolException | IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					return;
+					//return;
 				}
 				if(clientProcess!=null){
 					processerTCPlist.add(clientProcess);
@@ -223,8 +229,8 @@ public abstract class WebServer extends Thread{
 			}
 		}
 	}
-	public WebClient makeTCPClient(Socket a) throws UndefineProtocolException, IOException{
-		processTCP newClient=new processTCP(a);
+	public WebClient makeTCPClient(Socket client) throws UndefineProtocolException, IOException{
+		processTCP newClient=new processTCP(client);
 		return newClient;
 	}
 	public abstract byte[] process(byte[] data);
