@@ -119,6 +119,7 @@ public abstract class WebServer extends Thread{
 						System.out.println("Client disconnect");
 						try {
 							close();
+							processerTCPlist.remove(this);
 							return;
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
@@ -137,10 +138,13 @@ public abstract class WebServer extends Thread{
 						System.out.println("Client disconnect");
 						try {
 							close();
+							processerTCPlist.remove(this);
 							return;
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							//e1.printStackTrace();
+							processerTCPlist.remove(this);
+							System.out.println("error");
 							return;
 						}
 					}
@@ -211,6 +215,7 @@ public abstract class WebServer extends Thread{
 				processer.start();
 			}else if(type==Protocol.TCP){
 				Socket client=listener.getData();
+				//System.out.println(processerTCPlist.size());
 				if(client==null)continue;
 				WebClient clientProcess=null;
 				try {

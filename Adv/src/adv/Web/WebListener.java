@@ -51,49 +51,62 @@ public abstract class WebListener extends WebService{
 	}
 	@Override
 	public void run() {
-		if(type==Protocol.UDP){
-			try {
-				listenUDP();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		while(true){
+			if(type==Protocol.UDP){
 				try {
-					close();
-				} catch (IOException e1) {
+					listenUDP();
+				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					e.printStackTrace();
+					try {
+						close();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
+			}else if(type==Protocol.TCP){
+					try {
+						listenTCP();
+					} catch (UndefineProtocolException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						try {
+							close();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+			}else{
+				listenUndefine();
 			}
-		}else if(type==Protocol.TCP){
-			try {
-				listenTCP();
-			} catch (IOException | UndefineProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				try {
-					close();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		}else{
-			listenUndefine();
 		}
 	}
 	private void listenUDP() throws IOException{
 		reviceUDP();
 		processedDataList.add(preProcess(reviceUDPPackage()));
 	}
-	private void listenTCP() throws IOException, UndefineProtocolException{
-		Socket client = listener.accept();
+	private void listenTCP() throws UndefineProtocolException{
+		Socket client=null;
+		try {
+			client = listener.accept();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("get it");
+		}
 		//build(client);
+		if(client==null)return;
+		System.out.println("get it");
 		processedDataList.add(preProcess(client));
 	}
 	public <T> T getData(){
 		if(processedDataList.isEmpty())return null;
+		System.out.println("get");
 		T output=(T)processedDataList.get(0);
 		processedDataList.remove(0);
+		System.out.println(processedDataList.size());
 		return output;
 	}
 	
