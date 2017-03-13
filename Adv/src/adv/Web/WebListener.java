@@ -94,16 +94,15 @@ public abstract class WebListener extends WebService{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("get it");
+			
 		}
 		//build(client);
 		if(client==null)return;
-		System.out.println("get it");
+
 		processedDataList.add(preProcess(client));
 	}
 	public <T> T getData(){
 		if(processedDataList.isEmpty())return null;
-		System.out.println("get");
 		T output=(T)processedDataList.get(0);
 		processedDataList.remove(0);
 		System.out.println(processedDataList.size());

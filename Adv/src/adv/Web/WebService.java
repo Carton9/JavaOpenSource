@@ -89,6 +89,7 @@ public abstract class WebService implements Runnable ,AutoCloseable{
 	}
 	
 	protected void sendUDP() throws IOException{
+		if(inputStock.isEmpty())return;
 		byte[] data=inputStock.get(0);
 		byte[] buff=new byte[4096];
 		inputStock.remove(0);
