@@ -7,6 +7,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 //fix
 public abstract class WebService implements Runnable ,AutoCloseable{
@@ -54,7 +55,7 @@ public abstract class WebService implements Runnable ,AutoCloseable{
 		if(Client==null)throw new IOException();
 		if(Client.getClass().getName().equals("java.net.DatagramSocket")){
 			DatagramSocket ClientUDP=(DatagramSocket)Client;
-			ClientUDP.setSoTimeout(5000);
+			ClientUDP.setSoTimeout(50);
 		}
 		else if(Client.getClass().getName().equals("java.net.Socket")){
 			Socket ClientTCP=(Socket)Client;
@@ -95,15 +96,7 @@ public abstract class WebService implements Runnable ,AutoCloseable{
 		inputStock.remove(0);
 		inputUDP=new DatagramPacket(buff,buff.length);
 		outputUDP= new DatagramPacket(data,data.length,ip,port); 
-		for(int i=0;i<5;i++){
-			ClientUDP.send(outputUDP);
-			ClientUDP.receive(inputUDP);
-			if(inputUDP.getAddress().equals(ip)){
-				String respone=new String(inputUDP.getData());
-				if(respone.equals("OK"))break;
-				else outputStock.add(inputUDP.getData());
-			}
-		}
+		ClientUDP.send(outputUDP);
 	}
 	
 	protected void reviceTCP() throws IOException{
@@ -111,7 +104,7 @@ public abstract class WebService implements Runnable ,AutoCloseable{
 		inputTCP.read(buff, 0, 4096);
 		outputStock.add(buff);
 	}
-	protected void reviceUDP() throws IOException{
+	protected void reviceUDP() throws IOException,SocketTimeoutException {
 		byte[] buff=new byte[4096];
 		inputUDP=new DatagramPacket(buff,buff.length);
 		ClientUDP.receive(inputUDP);  

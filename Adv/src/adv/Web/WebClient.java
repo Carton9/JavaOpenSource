@@ -9,6 +9,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 //fix
 public abstract class WebClient extends WebService{
@@ -46,9 +47,10 @@ public abstract class WebClient extends WebService{
 		while(true){
 			if(type==Protocol.UDP){
 				try {
-					sendUDP();
+					
 					reviceUDP();
-				} catch (IOException e) {
+				}catch (SocketTimeoutException e) {
+				}catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					try {
@@ -91,7 +93,20 @@ public abstract class WebClient extends WebService{
 					}
 				}
 			}
+			
 		}
 	}
-
+	@Override
+	public void send(byte[] data){
+		if(data==null)return;
+		inputStock.add(data);
+		if(type==Protocol.UDP){
+			try {
+				sendUDP();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 }
