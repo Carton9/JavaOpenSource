@@ -9,7 +9,11 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-//fix
+/** 
+ * This class give .
+ * @author Mike Cai
+ * @version v1.00
+ */
 public abstract class WebService implements Runnable ,AutoCloseable{
 	protected boolean isAlive=false;
 	protected InetAddress ip;

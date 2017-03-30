@@ -47,7 +47,6 @@ public abstract class WebClient extends WebService{
 		while(true){
 			if(type==Protocol.UDP){
 				try {
-					
 					reviceUDP();
 				}catch (SocketTimeoutException e) {
 				}catch (IOException e) {
