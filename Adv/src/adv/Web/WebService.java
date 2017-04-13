@@ -10,12 +10,12 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 /** 
- * This class give .
+ * This class provide methods to connect other computer.
  * @author Mike Cai
  * @version v1.00
  */
 public abstract class WebService implements Runnable ,AutoCloseable{
-	protected boolean isAlive=false;
+	protected volatile boolean isAlive=false;
 	protected InetAddress ip;
 	protected String ipString;
 	protected int port;
@@ -30,6 +30,10 @@ public abstract class WebService implements Runnable ,AutoCloseable{
 	protected Socket ClientTCP=null;
 	protected OutputStream outputTCP=null;
 	protected InputStream inputTCP=null;
+	/**
+	 * This method use to initialize service.
+	 * @return null.
+	 */
 	public void init(Protocol type,String IP,int port) throws UndefineProtocolException, IOException {
 		//error=new UndefineProtocolException();
 		// TODO Auto-generated constructor stub
@@ -71,6 +75,10 @@ public abstract class WebService implements Runnable ,AutoCloseable{
 			buildUndefine(Client);
 		}
 	}
+	/**
+	 * This method use to close service.
+	 * @return null.
+	 */
 	@Override
 	public void close()throws IOException{
 		if(type==Protocol.TCP){
@@ -92,7 +100,6 @@ public abstract class WebService implements Runnable ,AutoCloseable{
 		inputStock.remove(0);
 		outputTCP.write(data, 0, data.length);
 	}
-	
 	protected void sendUDP() throws IOException{
 		if(inputStock.isEmpty())return;
 		byte[] data=inputStock.get(0);
@@ -102,7 +109,6 @@ public abstract class WebService implements Runnable ,AutoCloseable{
 		outputUDP= new DatagramPacket(data,data.length,ip,port); 
 		ClientUDP.send(outputUDP);
 	}
-	
 	protected void reviceTCP() throws IOException{
 		byte[] buff=new byte[4096];
 		inputTCP.read(buff, 0, 4096);
@@ -116,22 +122,61 @@ public abstract class WebService implements Runnable ,AutoCloseable{
 		DatagramPacket outputUDP= new DatagramPacket("OK".getBytes(),"OK".length(),ip,port); 
 		ClientUDP.send(outputUDP);
 	}
+	/**
+	 * This method use to add data to sending list.
+	 * @param  data.
+	 * @return null.
+	 */
 	public void send(byte[] data){
 		if(data==null)return;
 		inputStock.add(data);
 	}
+	/**
+	 * This method use to get data to revicing list.
+	 * @param  null.
+	 * @return data.
+	 */
 	public byte[] revice(){
 		if(outputStock.isEmpty())return null;
 		byte[] buff=outputStock.get(0);
 		outputStock.remove(0);
 		return buff;
 	}
+	/**
+	 * This method use to get data to revicing list.
+	 * @return is alive.
+	 */
 	public boolean isConnect(){
 		return isAlive;
 	}
+	/**
+	 * This method use to initialize undefine service.
+	 * @param ip, port.
+	 * @return null.
+	 */
 	public abstract void initUndefine(String ip,int port) throws UndefineProtocolException, IOException;
+	/**
+	 * This method use to set up input and output for undefine service.
+	 * @param Client.
+	 * @return null.
+	 */
 	public abstract void buildUndefine(Object Client) throws UndefineProtocolException, IOException;
+	/**
+	 * This method use to send data in the sending list by undefine service.
+	 * @param null.
+	 * @return null.
+	 */
 	public abstract void sendUndefine()throws IOException;
+	/**
+	 * This method use to revice data to the revicing list by undefine service.
+	 * @param null.
+	 * @return null.
+	 */
 	public abstract void reviceUndefine() throws IOException;
+	/**
+	 * This method use to close undefine service.
+	 * @param null.
+	 * @return null.
+	 */
 	public abstract void closeUndefine() throws IOException;
 }

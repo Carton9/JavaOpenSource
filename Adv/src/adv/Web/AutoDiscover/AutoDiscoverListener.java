@@ -4,9 +4,15 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import adv.Web.*;
-
+/** 
+ * This class provide listening service for auto discover.
+ * @author Mike Cai
+ * @version v1.00
+ */
 public class AutoDiscoverListener extends WebService {
 	final String checkCode="r1Eva$Jt";
 	ArrayList<UserInfo> userList=new ArrayList<UserInfo>();
@@ -89,11 +95,37 @@ public class AutoDiscoverListener extends WebService {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		while(true){
-			
-		}
-	}
+		Timer sender=new Timer(true);
+		TimerTask task=new TimerTask(){
 
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					sendUDP();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		};
+		sender.schedule(task, 0, 10);
+		isAlive=true;
+		while(isAlive){
+			try {
+				reviceUDP();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		sender.cancel();
+	}
+	public void kill(){
+		this.isAlive=false;
+	}
+	
 	@Override
 	public void initUndefine(String ip, int port) throws UndefineProtocolException, IOException {
 		// TODO Auto-generated method stub
