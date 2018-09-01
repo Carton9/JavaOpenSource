@@ -20,39 +20,17 @@ public class AutoDiscoverListener extends WebService {
 	int serverPort;
 	String bordcastMessege;
 	String serverName;
-	class UserInfo{
-		private String IP;
-		private int port;
-		private String name;
-		public String getIP() {
-			return IP;
-		}
-		public void setIP(String iP) {
-			IP = iP;
-		}
-		public int getPort() {
-			return port;
-		}
-		public void setPort(int port) {
-			this.port = port;
-		}
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-	}
+
+	/**
+	 * Constractor.
+	 * @param  pointer-which data in data list user want to get.
+	 */
 	public AutoDiscoverListener(String serverName,String listenerIP,int listenerPort,String serverIP,int serverPort) throws UndefineProtocolException, IOException {
 		error=new UndefineProtocolException();
 		this.serverIP=serverIP;
 		this.serverPort=serverPort;
 		bordcastMessege="#"+checkCode+"#"+serverName+"#"+serverIP+"#"+serverPort+"#";
 		init(Protocol.UDP,"255.255.255.255",listenerPort);
-	}
-	public AutoDiscoverListener(String IP,int port) throws UndefineProtocolException, IOException {
-		error=new UndefineProtocolException();
-		init(Protocol.UDP,IP,port);
 	}
 	@Override
 	protected void sendUDP() throws IOException{
@@ -79,18 +57,22 @@ public class AutoDiscoverListener extends WebService {
 		DatagramPacket outputUDP= new DatagramPacket("OK".getBytes(),"OK".length(),ip,port); 
 		ClientUDP.send(outputUDP);
 	}
+	/**
+	 * This method is disable
+	 * @param  null
+	 * @return null
+	 */
 	@Override
 	public void send(byte[] data){
-		if(data==null)return;
+		/*if(data==null)return;
 		inputStock.add(data);
 		if(type==Protocol.UDP){
 			try {
 				sendUDP();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
+		}*/
 	}
 	@Override
 	public void run() {
@@ -100,11 +82,9 @@ public class AutoDiscoverListener extends WebService {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				try {
 					sendUDP();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -122,6 +102,11 @@ public class AutoDiscoverListener extends WebService {
 		}
 		sender.cancel();
 	}
+	/**
+	 * This method is used to close listener
+	 * @param  null
+	 * @return null
+	 */
 	public void kill(){
 		this.isAlive=false;
 	}
@@ -155,5 +140,10 @@ public class AutoDiscoverListener extends WebService {
 		// TODO Auto-generated method stub
 		throw new IOException();
 	}
-
+	
+	public UserInfo getUser(){
+		UserInfo user=userList.get(0);
+		userList.remove(0);
+		return user;
+	}
 }

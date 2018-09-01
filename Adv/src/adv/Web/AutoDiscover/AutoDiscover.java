@@ -1,11 +1,12 @@
 package adv.Web.AutoDiscover;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import adv.Web.*;
 
-public abstract class AutoDiscover {
+public class AutoDiscover extends Thread{
 	ServiceType type;
 	protected InetAddress ip;
 	int port;
@@ -13,14 +14,25 @@ public abstract class AutoDiscover {
 	WebClient connection;
 	WebServer server;
 	AutoDiscoverListener listener;
-	public AutoDiscover(ServiceType type,String thisIP,int listenerPort) throws UnknownHostException {
+	Thread listenerThread;
+	String bordcastMessege;
+	final String checkCode="r1Eva$Jt";
+	public AutoDiscover(ServiceType type,String thisIP,int listenerPort,String name) throws UndefineProtocolException, IOException {
 		// TODO Auto-generated constructor stub
 		ip=InetAddress.getByName(thisIP);
 		this.port=listenerPort;
 		this.type=type;
 		this.protocol=protocol;
+		if(type.getValue()==0){
+			listener=new AutoDiscoverListener(name, thisIP, listenerPort, thisIP, listenerPort);
+			listenerThread=new Thread(listener);
+			listenerThread.start();
+		}
 	}
-	public abstract void Listening();
-	public abstract void search();
-	public abstract void disconnect();
+	@Override
+	public void run() {
+		if(listener.isConnect()){
+			
+		}
+	}
 }
